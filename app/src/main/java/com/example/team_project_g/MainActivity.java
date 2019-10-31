@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private String imageFilePath;
     private Uri photoUri;
 
+    Bitmap Imageobj;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,8 +108,8 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 exifDegree = 0;
             }
-
-            ((ImageView) findViewById(R.id.iv_result)).setImageBitmap(rotate(bitmap, exifDegree));
+            Imageobj = rotate(bitmap, exifDegree);
+            ((ImageView) findViewById(R.id.iv_result)).setImageBitmap(Imageobj);
         }
     }
 
