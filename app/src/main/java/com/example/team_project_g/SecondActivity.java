@@ -68,7 +68,14 @@ public class SecondActivity  extends AppCompatActivity {
         CropImage.activity(imageUri)
                 .start(this);
 
-
+        Button btnEdit = (Button) findViewById(R.id.search);
+        btnEdit.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
+                intent.putExtra(SearchManager.QUERY, url_address + response_url);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -90,9 +97,24 @@ public class SecondActivity  extends AppCompatActivity {
                 }
 
 
+                //CropImageView cropImageView =  findViewById(R.id.cropImageView);
                 ImageView crop_img_view = findViewById(R.id.crop_image_view); // <- way more better
 
+                //cropImageView.setImageUriAsync(resultUri);
+
                 crop_img_view.setImageURI(resultUri);
+
+                try {
+                    String response_data = returned_response.getString("data");
+                    JSONObject response_data_json = new JSONObject(response_data);
+
+                    response_url =  response_data_json.getString("url");
+
+                    url_address = "https://www.google.com/searchbyimage?site=search&sa=X&image_url=";
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
