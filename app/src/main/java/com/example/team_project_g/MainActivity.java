@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,6 +17,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -61,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
                     } catch (IOException e){
 
                     }
+
                     if (photofile != null){
                         photoUri = FileProvider.getUriForFile(getApplicationContext(), getPackageName(), photofile);
                         intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
@@ -69,8 +73,20 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-    }
 
+        /*
+         */
+        //added for just move to second activity(only modified by another developer)
+        Button btnEdit = (Button) findViewById(R.id.btn_edit);
+        btnEdit.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(),
+                        SecondActivity.class);
+                intent.putExtra("uri",photoUri.toString());
+                startActivity(intent);
+            }
+        });
+    }
 
     public File createImageFile() throws IOException{
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());

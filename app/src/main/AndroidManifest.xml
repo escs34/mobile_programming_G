@@ -19,6 +19,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+        android:name="com.example.team_project_g.SecondActivity"
+        android:label="Second 액티비티" /> <!-- added by sts -->
 
         <provider
             android:authorities="com.example.team_project_g"

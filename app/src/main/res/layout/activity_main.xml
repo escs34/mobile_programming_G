@@ -30,6 +30,13 @@
             android:layout_height="wrap_content"
             android:text="사진찍기"
             android:id="@+id/btn_capture" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="편집하기"
+            android:id="@+id/btn_edit" />
+
     </LinearLayout>
 
 
