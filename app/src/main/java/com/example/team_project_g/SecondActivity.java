@@ -18,6 +18,9 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -40,24 +43,47 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 
+//cropping api 출처 : https://github.com/ArthurHub/Android-Image-Cropper
 public class SecondActivity  extends AppCompatActivity {
-
-    String response_url;
-    String url_address;
+    //찍은 사진을 cropping 하고 http 통신으로 image를 hosting한 후, 구글 이미지 검색을 수행
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.second);
         setTitle("세컨드 액티비티");
-        
+
         Intent intent = getIntent();
 
         String uri_str = intent.getStringExtra("uri");
         Uri imageUri = Uri.parse(uri_str);
-        ImageView crop_img_view = findViewById(R.id.crop_image_view); // <- way more better
+        CropImage.activity() //외부 app을 연결시키려함. 튜토리얼에 있으나 필요없는 코드
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .start(this);
 
-        crop_img_view.setImageURI(imageUri);
+        // start cropping activity for pre-acquired image saved on the device
+        CropImage.activity(imageUri)
+                .start(this);
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
+
+                ImageView crop_img_view = findViewById(R.id.crop_image_view); // <- way more better
+
+                crop_img_view.setImageURI(resultUri);
+
+
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
+        }
     }
 
 }
