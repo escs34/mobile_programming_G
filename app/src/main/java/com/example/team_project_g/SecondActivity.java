@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.FileUtils;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -49,34 +50,27 @@ public class SecondActivity  extends AppCompatActivity {
 
     String response_url;
     String url_address;
+    int is_finished;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.second);
+        //setContentView(R.layout.second);
         setTitle("세컨드 액티비티");
+
+        is_finished = 0;
 
         Intent intent = getIntent();
 
         String uri_str = intent.getStringExtra("uri");
         Uri imageUri = Uri.parse(uri_str);
-        //CropImage.activity()
-        //        .setGuidelines(CropImageView.Guidelines.ON)
-        //        .start(this);
 
         // start cropping activity for pre-acquired image saved on the device
         CropImage.activity(imageUri)
                 .start(this);
 
-        Button btnEdit = (Button) findViewById(R.id.search);
-        btnEdit.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
-                intent.putExtra(SearchManager.QUERY, url_address + response_url);
-                startActivity(intent);
-            }
-        });
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -90,19 +84,13 @@ public class SecondActivity  extends AppCompatActivity {
                 File cropped_image_file = new File(resultUri.getPath());
                 try {
                     returned_response = HttpMultiPart(cropped_image_file);
+
+
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
-
-                //CropImageView cropImageView =  findViewById(R.id.cropImageView);
-                ImageView crop_img_view = findViewById(R.id.crop_image_view); // <- way more better
-
-                //cropImageView.setImageUriAsync(resultUri);
-
-                crop_img_view.setImageURI(resultUri);
 
                 try {
                     String response_data = returned_response.getString("data");
@@ -116,16 +104,27 @@ public class SecondActivity  extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }
         }
+
+        if (response_url != null){
+            String url =url_address + response_url;
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(intent);
+
+            response_url = null;
+
+        }
+
+        finish();
+
     }
+
 
     //출처 : https://kwon8999.tistory.com/entry/HttpURLConnection-Multipart-%ED%8C%8C%EC%9D%BC-%EC%97%85%EB%A1%9C%EB%93%9C
     private JSONObject HttpMultiPart(final File file) throws ExecutionException, InterruptedException {
-
         JSONObject my_response = new AsyncTask<Void, Void, JSONObject>(){
 
             @Override
@@ -141,7 +140,7 @@ public class SecondActivity  extends AppCompatActivity {
                 try{
 
                     String image_host_url = "https://api.imgbb.com/1/upload";
-                    String api_key = "?key=3f4427ecf80247d9b7f57f130a0af6f7";//"?key=000fe55327b5c080c099f62956aee204";
+                    String api_key = "?key=3f4427ecf80247d9b7f57f130a0af6f7";//"?key=000fe55327b5c080c099f62956aee204";//
 
                     URL url = new URL(image_host_url+api_key);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -209,7 +208,13 @@ public class SecondActivity  extends AppCompatActivity {
                 } catch (Exception e){
                     e.printStackTrace();
                 }
+
+
+
                 return result;
+
+
+
             }
 
             @Override
