@@ -33,6 +33,10 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends Activity {
+    /*
+    시작 로고를 띄우기 위한 화면. 2초간 sleep이후 camera activity로 넘어감
+
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
